@@ -11,9 +11,10 @@
   ],
   "activationEvents": [
     "onCommand:momoy.helloWorld",
-    "onCommand:momoy.status_init",
-    "onCommand:momoy.status_pre_update",
-    "onCommand:momoy.status_update"
+    "onCommand:momoy.handler_init",
+    "onCommand:momoy.handler_rev",
+    "onCommand:momoy.handler_pre_update",
+    "onCommand:momoy.handler_update"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -23,26 +24,30 @@
         "title": "Momoy: Hello World"
       },
       {
-        "command": "momoy.status_init",
-        "title": "Momoy: StatusBar Init"
+        "command": "momoy.handler_init",
+        "title": "Momoy: Handler Init"
       },
       {
-        "command": "momoy.status_pre_update",
-        "title": "Momoy: StatusBar PreUpdate"
+        "command": "momoy.handler_rev",
+        "title": "Momoy: Handler Rev"
       },
       {
-        "command": "momoy.status_update",
-        "title": "Momoy: StatusBar Update"
+        "command": "momoy.handler_pre_update",
+        "title": "Momoy: Handler PreUpdate"
+      },
+      {
+        "command": "momoy.handler_update",
+        "title": "Momoy: Handler Update"
       }
     ],
     "keybindings":[
       {
-        "command": "momoy.status_update",
+        "command": "momoy.handler_update",
         "key": "ctrl+0",
         "when": "editorTextFocus"
       },
       {
-        "command": "momoy.status_pre_update",
+        "command": "momoy.handler_pre_update",
         "key": "ctrl+9",
         "when": "editorTextFocus"
       }
@@ -50,11 +55,7 @@
     "menus": {
       "editor/context": [
         {
-          "command": "momoy.helloWorld",
-          "group": "navigation"
-        },
-        {
-          "command": "momoy.status_init",
+          "command": "momoy.handler_init",
           "group": "navigation"
         }
       ]

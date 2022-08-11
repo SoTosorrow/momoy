@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
 import * as fs from 'fs'
+import { Handler } from "./hander";
 
-export class StatusHandler{
-    private statusBar !: vscode.StatusBarItem;
-    private count : number = -1;
-    private fileUrl :string = "";
-    private fileLines : string[] = [];
-    private fileLineCounts : number = 0;
+export class StatusHandler implements Handler{
+    public desc : string = "update status";
+    public statusBar !: vscode.StatusBarItem;
+    public count : number = -1;
+    public fileUrl :string = "";
+    public fileLines : string[] = [];
+    public fileLineCounts : number = 0;
     
     constructor() {
         if(!this.statusBar){
@@ -26,7 +28,9 @@ export class StatusHandler{
                 if(!msg){
                     return;
                 }
+                console.log(msg[0]);
                 this.fileUrl = msg[0].path.slice(1,);
+                console.log(this.fileUrl);
                 
                 // 读取文件
                 fs.readFile(this.fileUrl, 'utf8', (err,data)=>{
