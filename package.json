@@ -12,8 +12,6 @@
   "activationEvents": [
     "onCommand:momoy.helloWorld",
     "onCommand:momoy.handler_init",
-    "onCommand:momoy.handler_rev",
-    "onCommand:momoy.handler_pre_update",
     "onCommand:momoy.handler_update"
   ],
   "main": "./out/extension.js",
@@ -28,14 +26,6 @@
         "title": "Momoy: Handler Init"
       },
       {
-        "command": "momoy.handler_rev",
-        "title": "Momoy: Handler Rev"
-      },
-      {
-        "command": "momoy.handler_pre_update",
-        "title": "Momoy: Handler PreUpdate"
-      },
-      {
         "command": "momoy.handler_update",
         "title": "Momoy: Handler Update"
       }
@@ -44,16 +34,22 @@
       {
         "command": "momoy.handler_update",
         "key": "ctrl+0",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": "0"
       },
       {
-        "command": "momoy.handler_pre_update",
+        "command": "momoy.handler_update",
         "key": "ctrl+9",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": "1"
       }
     ],
     "menus": {
       "editor/context": [
+        {
+          "command": "momoy.helloWorld",
+          "group": "navigation"
+        },
         {
           "command": "momoy.handler_init",
           "group": "navigation"

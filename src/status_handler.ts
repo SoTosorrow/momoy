@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import { Handler } from "./hander";
 
 export class StatusHandler implements Handler{
-    public desc : string = "update status";
     public statusBar !: vscode.StatusBarItem;
     public count : number = -1;
     public fileUrl :string = "";
@@ -15,7 +14,8 @@ export class StatusHandler implements Handler{
             this.statusBar  = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
         }
     }
-    init() {
+    init(args:string) {
+        
         // 选取文件
         vscode.window.showOpenDialog(
             {
@@ -43,18 +43,17 @@ export class StatusHandler implements Handler{
                     this.fileLineCounts = this.fileLines.length;
                     this.count = -1;
                     vscode.window.showInformationMessage(this.fileUrl);
-                    this.update();
+                    this.update("0");
                 })
             }
         )
     }
-    preUpdate(){
-        this.count--;
-        this.statusBar.text = "["+this.count+"/"+this.fileLineCounts+"] : " + this.fileLines[this.count];
-        this.statusBar.show();
-    }
-    update() {
-        this.count++;
+    update(args:string) {
+        if(args == "0") {
+            this.count++;
+        } else {
+            this.count--;
+        }
         this.statusBar.text = "["+this.count+"/"+this.fileLineCounts+"] : " + this.fileLines[this.count];
         this.statusBar.show();
     }

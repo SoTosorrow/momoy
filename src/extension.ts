@@ -1,59 +1,63 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { Handler } from "./hander";
-import { StatusHandler } from './status_handle';
-
-class PlaceHandler implements Handler{
-	desc:string =  "placeholder handler for proxy";
-	init(){}
-	update(){}
-	preUpdate(){}
-	proxyInit(){
-		this.init();
-	}
-	proxyUpdate(){
-		this.update();
-	}
-	proxyPreUpdate(){
-		this.preUpdate();
-	}
-}
+import { Handler, ProxyHandler } from "./hander";
+import { StatusHandler } from './status_handler';
+import { TestHandler } from './test_handler';
 
 export function activate(context: vscode.ExtensionContext) {
 	
-	console.log('Congratulations, your extension "momoy" is now active!');
+	console.log("It's time to momoy~");
 
+	// 用于代理、动态分发
+	let proxy_handler = new ProxyHandler();
+	let handlef_map = new Map();
+	let handler_map = new Map();
+	let current_handler :Handler;
+	
+	handlef_map.set("init", proxy_handler.proxyInit);
+	handlef_map.set("update", proxy_handler.proxyUpdate);
+	
+	handler_map.set("test_handler", new TestHandler())
+	handler_map.set("status_handler", new StatusHandler())
+	current_handler = handler_map.get("test_handler");
 
-	let proxy_handler = new PlaceHandler();
-	let handle_map = new Map();
-	handle_map.set("init", proxy_handler.proxyInit);
-	handle_map.set("update", proxy_handler.proxyUpdate);
-	handle_map.set("pre_update", proxy_handler.proxyPreUpdate);
-	
-	
-	let status_handle = new StatusHandler();
+	// 注册执行内容
 	context.subscriptions.push(vscode.commands.registerCommand('momoy.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello World from momoy!');
+		vscode.window.showInputBox({
+			password: false,
+			ignoreFocusOut: true,
+			placeHolder: "use_handler"
+		}).then((input)=>{
+			// 通过用户输入的handler去map寻找并切换
+			if(input != null){
+				vscode.window.showInformationMessage(input);
+				let result_handler = handler_map.get(input);
+				if(result_handler != undefined) {
+					current_handler = result_handler;
+				}
+			}
+		});
 	}));
 	
-	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_init', ()=>{
-		handle_map.get("init").call(status_handle);
-		// status_handle.init();
+	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_init', (args:any)=>{
+		handlef_map.get("init").call(current_handler,args);
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_rev', ()=>{
-		handle_map.set("update", proxy_handler.proxyPreUpdate);
-		handle_map.set("pre_update", proxy_handler.proxyUpdate);
+	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_update', (args:any)=>{
+		handlef_map.get("update").call(current_handler,args);
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_update', ()=>{
-		// status_handle.update();
-		handle_map.get("update").call(status_handle);
-	}));
-	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_pre_update', ()=>{
-		// status_handle.preUpdate();
-		handle_map.get("pre_update").call(status_handle);
-	}));
+
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+/**
+ * 
+ * 		vscode.window.activeTextEditor?.edit(editBuilder=>{
+			// let position = new vscode.Position(0, 0);
+			let position = vscode.window.activeTextEditor?.selection.active;
+			// console.log(vscode.window.activeTextEditor?.document.lineAt(position));
+			if(position) {
+				editBuilder.insert(position,"hello momoy");
+			}
+		})
+ */
