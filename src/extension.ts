@@ -22,20 +22,32 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// 注册执行内容
 	context.subscriptions.push(vscode.commands.registerCommand('momoy.helloWorld', () => {
-		vscode.window.showInputBox({
-			password: false,
-			ignoreFocusOut: true,
-			placeHolder: "use_handler"
-		}).then((input)=>{
-			// 通过用户输入的handler去map寻找并切换
-			if(input != null){
-				vscode.window.showInformationMessage(input);
-				let result_handler = handler_map.get(input);
-				if(result_handler != undefined) {
-					current_handler = result_handler;
-				}
+		let handler_list = [];
+		for(let key of handler_map.keys()){
+			handler_list.push(key);
+		}
+		vscode.window.showQuickPick(
+			handler_list,
+			{
+				canPickMany:false,
+				ignoreFocusOut: true,
 			}
+		).then((select)=>{
+			vscode.window.showInformationMessage(select);
+			current_handler = handler_map.get(select);
 		});
+		// vscode.window.showInputBox({
+		// 	password: false,
+		// 	ignoreFocusOut: true,
+		// 	placeHolder: "use_handler"
+		// }).then((input)=>{
+		// 	if(input != null){
+		// 		let result_handler = handler_map.get(input);
+		// 		if(result_handler != undefined) {
+		// 			current_handler = result_handler;
+		// 		}
+		// 	}
+		// });
 	}));
 	
 	context.subscriptions.push(vscode.commands.registerCommand('momoy.handler_init', (args:any)=>{

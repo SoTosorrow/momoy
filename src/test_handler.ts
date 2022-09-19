@@ -7,7 +7,6 @@ export class TestHandler implements Handler{
         window.showInformationMessage("init");
     }
     update(args:string){
-        console.log(args, typeof(args))
         if(args=="0")
             window.showInformationMessage("update");
         else
